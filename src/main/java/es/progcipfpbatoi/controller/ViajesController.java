@@ -149,9 +149,8 @@ public class ViajesController {
 
                     GestorIO.print("Reserva realizada con éxito. A continuación se mostrará el ticket de confirmación.");
 
-//                    ListadoViajesView vistaReserva = new ListadoViajesView(reserva);
-//                    vistaReserva.visualizarReserva();
-//                    System.out.println(new ListadoViajesView(reserva));
+                    ListadoViajesView vistaReserva = new ListadoViajesView(reserva);
+                    vistaReserva.visualizarReserva();
                     return;
                 }
                 else {
