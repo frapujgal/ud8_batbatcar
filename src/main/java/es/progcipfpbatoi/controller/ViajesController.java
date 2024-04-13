@@ -53,7 +53,7 @@ public class ViajesController {
         List<Viaje> viajes = new ArrayList<>();
 
         for (Viaje v : viajesManager.findAll()) {
-            if(!v.isCancelado() && !v.isCerrado() && !v.getPropietario().equals(this.usuario)) {
+            if(!v.isCancelado() && !v.isCerrado() && v.getPlazasLibres() > 0 && !v.getPropietario().equals(this.usuario)) {
                 viajes.add(v);
             }
         }

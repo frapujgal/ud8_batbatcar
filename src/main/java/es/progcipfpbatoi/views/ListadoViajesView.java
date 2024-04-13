@@ -17,20 +17,20 @@ import java.util.List;
 public class ListadoViajesView {
 
     private final List<Viaje> viajes;
-    private final Reserva reserva;
+//    private final Reserva reserva;
 
     private static final int ANCHO_TABLA = 100;
     private static final int ANCHO_TABLA_RESERVA = 70;
 
     public ListadoViajesView(List<Viaje> viajes) {
         this.viajes = viajes;
-        this.reserva = null;
+//        this.reserva = null;
     }
 
-    public ListadoViajesView(Reserva reserva) {
-        this.viajes = null;
-        this.reserva = reserva;
-    }
+//    public ListadoViajesView(Reserva reserva) {
+//        this.viajes = null;
+//        this.reserva = reserva;
+//    }
 
     private AsciiTable buildASCIITable()  {
         
@@ -73,9 +73,9 @@ public class ListadoViajesView {
         System.out.println(buildASCIITable().render(ANCHO_TABLA));
     }
 
-    public void visualizarReserva() {
-        System.out.println(buildASCIITable2(this.reserva).render(ANCHO_TABLA_RESERVA));
-    }
+//    public void visualizarReserva() {
+//        System.out.println(buildASCIITable2(this.reserva).render(ANCHO_TABLA_RESERVA));
+//    }
 
     private void generarFilasViajes (AsciiTable tabla){
         
