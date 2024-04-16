@@ -6,10 +6,11 @@ import es.progcipfpbatoi.model.entidades.types.Cancelable;
 import es.progcipfpbatoi.model.entidades.types.Exclusivo;
 import es.progcipfpbatoi.model.entidades.types.Flexible;
 import es.progcipfpbatoi.model.entidades.types.Viaje;
-import es.progcipfpbatoi.model.managers.ReservasManager;
 import es.progcipfpbatoi.model.managers.ViajesManager;
 import es.progcipfpbatoi.utils.GestorIO;
+import es.progcipfpbatoi.views.ListadoReservasUsuarioView;
 import es.progcipfpbatoi.views.ListadoViajesView;
+import es.progcipfpbatoi.views.ReservaView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,11 +19,9 @@ public class ViajesController {
 
     private Usuario usuario;
     private ViajesManager viajesManager;
-    private ReservasManager reservasManager;
 
     public ViajesController() {
         this.viajesManager = new ViajesManager();
-        this.reservasManager = new ReservasManager();
         this.usuario = null;
     }
 
@@ -39,25 +38,58 @@ public class ViajesController {
     }
 
     public void listarViajesCancelables() {
-        List<Viaje> viajes = new ArrayList<>();
-
-        for (Viaje v : viajesManager.findAll()) {
-            if(v instanceof Cancelable && v.getPropietario().equals(this.usuario) && !v.isCancelado()) {
-                viajes.add(v);
-            }
-        }
+        List<Viaje> viajes = viajesManager.getViajesCancelables(this.usuario);
         System.out.println(new ListadoViajesView(viajes));
     }
 
     public void listarViajesReservables() {
-        List<Viaje> viajes = new ArrayList<>();
+        List<Viaje> viajes = viajesManager.getViajesReservables(this.usuario);
+        System.out.println(new ListadoViajesView(viajes));
+    }
 
-        for (Viaje v : viajesManager.findAll()) {
-            if(!v.isCancelado() && !v.isCerrado() && v.getPlazasLibres() > 0 && !v.getPropietario().equals(this.usuario)) {
-                viajes.add(v);
+    public void listarViajesFlexibles() {
+        List<Viaje> viajes = viajesManager.getViajesFlexibles(this.usuario);
+        System.out.println(new ListadoViajesView(viajes));
+    }
+
+    public void listarReservas(Usuario usuario) {
+        List<Reserva> reservas = getReservasUsuario(usuario);
+        System.out.println(new ListadoReservasUsuarioView(reservas));
+    }
+
+    public void listarReservasModificables(Usuario usuario) {
+        List<Reserva> reservas = new ArrayList<>();
+
+        for (Reserva r : getReservasUsuario(this.usuario)) {
+            if(r.getViaje() instanceof Flexible) {
+                reservas.add(r);
             }
         }
-        System.out.println(new ListadoViajesView(viajes));
+        System.out.println(new ListadoReservasUsuarioView(reservas));
+    }
+
+    public void listarReservasCancelables(Usuario usuario) {
+        List<Reserva> reservas = new ArrayList<>();
+
+        for (Reserva r : getReservasUsuario(this.usuario)) {
+            if(r.getViaje() instanceof Cancelable) {
+                reservas.add(r);
+            }
+        }
+        System.out.println(new ListadoReservasUsuarioView(reservas));
+    }
+
+    public List<Reserva> getReservasUsuario(Usuario usuario) {
+        List<Reserva> reservasUsuario = new ArrayList<>();
+
+        for (Viaje v : viajesManager.findAll()) {
+            for (Reserva r : v.getReservas()) {
+                if (r.getCliente().getUsername().equals(usuario.getUsername())) {
+                    reservasUsuario.add(r);
+                }
+            }
+        }
+        return reservasUsuario;
     }
 
     /**
@@ -105,8 +137,8 @@ public class ViajesController {
         listarViajesCancelables();
         int seleccion = GestorIO.getInt("Introduce el código de viaje a seleccionar");
 
-        for(Viaje v : viajesManager.findAll()) {
-            if(v.getId() == seleccion && v instanceof Cancelable) {
+        for(Viaje v : viajesManager.getViajesCancelables(this.usuario)) {
+            if(v.getId() == seleccion) {
                 viajesManager.cancel(v);
                 GestorIO.print("El viaje se ha cancelado correctamente.");
                 return;
@@ -125,32 +157,37 @@ public class ViajesController {
         int idViaje = GestorIO.getInt("Introduzca el código de viaje a seleccionar");
         int numPlazas = GestorIO.getInt("Introduzca el número de plazas a reservar");
 
-        for(Viaje v : viajesManager.findAll()) {
-            if(v.getId() == idViaje && !v.getPropietario().equals(this.usuario)) {
-                if(v.getPlazasLibres() > numPlazas) {
-                    int id;
-                    if(reservasManager.getReservas().isEmpty()) {
-                        id = 1;
+        for(Viaje v : viajesManager.getViajesReservables(this.usuario)) {
+            if(v.getId() == idViaje) {
+                // comprobamos que el usuario no tenga una reserva en ese viaje
+                for (Reserva r : v.getReservas()) {
+                    if(r.getCliente().getUsername().equals(this.usuario.getUsername())) {
+                        GestorIO.print("El usuario " + this.usuario.getUsername() + " ya tiene una reserva en este viaje");
+                        return;
                     }
-                    else {
-                        id = reservasManager.getReservas().size() + 1;
-                    }
+                }
 
-                    v.setPlazasLibres(v.getPlazasLibres() - numPlazas);
+                // comprobamos que haya plazas suficientes en el viaje
+                if(v.getPlazasOfertadas() >= numPlazas) {
                     v.setPlazasReservadas(v.getPlazasReservadas() + numPlazas);
-                    Reserva reserva = new Reserva(id, this.usuario ,numPlazas);
-                    reservasManager.add(reserva);
+                    Reserva reserva = new Reserva(this.usuario ,numPlazas, v);
                     v.addReserva(reserva);
 
+                    // si es exclusivo, ponemos plazas libres a 0 y cerramos viaje
                     if(v instanceof Exclusivo) {
-                        v.setPlazasLibres(0);
+                        v.setPlazasReservadas(v.getPlazasOfertadas());
+                        v.setCerrado(true);
+                    }
+
+                    // si ya no quedan plazas libres, cerramos viaje
+                    if(v.getPlazasReservadas() == v.getPlazasOfertadas()) {
                         v.setCerrado(true);
                     }
 
                     GestorIO.print("Reserva realizada con éxito. A continuación se mostrará el ticket de confirmación.");
 
-                    ListadoViajesView vistaReserva = new ListadoViajesView(reserva);
-                    vistaReserva.visualizarReserva();
+                    ReservaView vistaReserva = new ReservaView(reserva);
+                    vistaReserva.visualizar();
                     return;
                 }
                 else {
@@ -160,6 +197,107 @@ public class ViajesController {
             }
         }
         GestorIO.print("No se ha encontrado el viaje.");
+    }
+
+    public void modificarReserva() {
+        if(this.usuario == null) {
+            GestorIO.print("Por favor, ¡identifícate primero!");
+            return;
+        }
+
+        listarReservasModificables(this.usuario);
+        int seleccion = GestorIO.getInt("Introduzca el código de reserva a modificar");
+        int plazas = GestorIO.getInt("Introduzca el número de plazas a reservar");
+
+        for (Viaje v : viajesManager.getViajesFlexibles(this.usuario)) {
+            for (Reserva r : v.getReservas()) {
+                if(r.getId() == seleccion) {
+                    if (r.getViaje().getPlazasOfertadas() < plazas) {
+                        GestorIO.print("No hay suficientes plazas.");
+                        return;
+                    }
+
+                    r.getViaje().getReservas().remove(r);
+                    r.getViaje().setPlazasReservadas(r.getViaje().getPlazasReservadas() - r.getNumPlazasSolicitadas() + plazas);
+
+                    Reserva nuevaReserva = new Reserva(this.usuario ,plazas, v);
+                    r.getViaje().getReservas().add(nuevaReserva);
+
+                    if(r.getViaje().getPlazasReservadas() == r.getViaje().getPlazasOfertadas()) {
+                        r.getViaje().setCerrado(true);
+                    }
+                    else {
+                        r.getViaje().setCerrado(false);
+                    }
+                    GestorIO.print("Reserva realizada con éxito. A continuación se mostrará el ticket de confirmación.");
+
+                    ReservaView vistaReserva = new ReservaView(nuevaReserva);
+                    vistaReserva.visualizar();
+
+                    GestorIO.print("Reserva del viaje de tipo Viaje " + r.getViaje().getTipoViaje() + " de " + r.getViaje().getPropietario().getUsername() + " código " + r.getViaje().getId() + " ruta " + r.getViaje().getRuta() + " modificada con éxito.");
+                    return;
+                }
+            }
+        }
+    }
+
+    public void cancelarReserva() {
+        if(this.usuario == null) {
+            GestorIO.print("Por favor, ¡identifícate primero!");
+            return;
+        }
+
+        listarReservas(this.usuario);
+        int seleccion = GestorIO.getInt("Introduzca el código de reserva a modificar");
+
+        for (Reserva r : getReservasUsuario(this.usuario)) {
+            if (r.getViaje() instanceof Cancelable || r.getViaje() instanceof Flexible) {
+                if (r.getId() == seleccion) {
+                    r.getViaje().getReservas().remove(r);
+                    r.getViaje().setPlazasReservadas(0);
+                    r.getViaje().setCerrado(false);
+
+                    GestorIO.print("Reserva del viaje de tipo Viaje " + r.getViaje().getTipoViaje() + " de " + r.getViaje().getPropietario().getUsername() + " código " + r.getViaje().getId() + " ruta " + r.getViaje().getRuta() + " cancelada con éxito.");
+                    return;
+                }
+            }
+        }
+
+
+
+
+//        public List<Reserva> getReservas() {
+//            return reservas;
+//        }
+//
+
+//
+
+//
+//        public List<Reserva> getReservablesUsuario(Usuario usuario) {
+//            List<Reserva> reservablesUsuario = new ArrayList<>();
+//            for (Reserva r : reservas) {
+//                if(!r.getCliente().getUsername().equals(usuario.getUsername())) {
+//                    reservablesUsuario.add(r);
+//                }
+//            }
+//
+//            return reservablesUsuario;
+//        }
+//
+//        public void add(Reserva reserva) {
+//            reservas.add(reserva);
+//        }
+//
+//        public void remove(Reserva reserva) {
+//            reservas.remove(reserva);
+//        }
+//
+
+//
+
+
+
 
     }
 

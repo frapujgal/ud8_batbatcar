@@ -8,16 +8,16 @@ import java.util.Objects;
  */
 public class Usuario {
 
-    private String usuario;
+    private String username;
     private String contraseña;
 
-    public Usuario(String usuario, String contraseña) {
-        this.usuario = usuario;
+    public Usuario(String username, String contraseña) {
+        this.username = username;
         this.contraseña = contraseña;
     }
 
-    public String getUsuario() {
-        return usuario;
+    public String getUsername() {
+        return username;
     }
 
     public String getContraseña() {
@@ -29,11 +29,11 @@ public class Usuario {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Usuario usuario1 = (Usuario) o;
-        return Objects.equals(this.getUsuario(), usuario1.getUsuario());
+        return Objects.equals(this.getUsername(), usuario1.getUsername());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(usuario);
+        return Objects.hashCode(username);
     }
 }

@@ -1,15 +1,21 @@
 package es.progcipfpbatoi.model.entidades;
 
+import es.progcipfpbatoi.model.entidades.types.Viaje;
+
 public class Reserva {
 
     private int id;
     private Usuario cliente;
     private int numPlazasSolicitadas;
+    private Viaje viaje;
+    private static int contador = 1;
 
-    public Reserva(int id, Usuario cliente, int numPlazasSolicitadas) {
-        this.id = id;
+    public Reserva(Usuario cliente, int numPlazasSolicitadas, Viaje viaje) {
+        this.id = contador;
         this.cliente = cliente;
         this.numPlazasSolicitadas = numPlazasSolicitadas;
+        this.viaje = viaje;
+        this.contador++;
     }
 
     public int getId() {
@@ -36,4 +42,7 @@ public class Reserva {
         this.numPlazasSolicitadas = numPlazasSolicitadas;
     }
 
+    public Viaje getViaje() {
+        return viaje;
+    }
 }

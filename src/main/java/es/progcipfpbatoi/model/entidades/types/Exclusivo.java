@@ -14,6 +14,6 @@ public class Exclusivo extends Viaje {
 
     @Override
     public String getTipoViaje() {
-        return "Exclusivo";
+        return "Viaje Exclusivo";
     }
 }

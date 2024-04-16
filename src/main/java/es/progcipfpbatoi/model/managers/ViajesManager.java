@@ -1,10 +1,10 @@
 package es.progcipfpbatoi.model.managers;
-import es.progcipfpbatoi.controller.ViajesController;
 import es.progcipfpbatoi.model.entidades.Usuario;
 import es.progcipfpbatoi.model.entidades.types.Cancelable;
 import es.progcipfpbatoi.model.entidades.types.Exclusivo;
 import es.progcipfpbatoi.model.entidades.types.Flexible;
 import es.progcipfpbatoi.model.entidades.types.Viaje;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,16 +58,51 @@ public class ViajesManager {
         return viajes;
     }
 
+    public List<Viaje> getViajesReservables(Usuario usuario) {
+        List<Viaje> viajes = new ArrayList<>();
+
+        for (Viaje v : findAll()) {
+            if(!v.getPropietario().equals(usuario) && !v.isCancelado() && !v.isCerrado()) {
+                viajes.add(v);
+            }
+        }
+        return viajes;
+    }
+
+    public List<Viaje> getViajesFlexibles(Usuario usuario) {
+        List<Viaje> viajes = new ArrayList<>();
+
+        for (Viaje v : findAll()) {
+            if(v instanceof Flexible && !v.getPropietario().equals(usuario) && !v.isCancelado() && !v.isCerrado()) {
+                viajes.add(v);
+            }
+        }
+        return viajes;
+    }
+
+    public List<Viaje> getViajesCancelables(Usuario usuario) {
+        List<Viaje> viajes = new ArrayList<>();
+
+        for (Viaje v : findAll()) {
+            if(v instanceof Cancelable && v.getPropietario().equals(usuario) && !v.isCancelado() && !v.isCerrado()) {
+                viajes.add(v);
+            }
+        }
+        return viajes;
+    }
+
     private void init() {
         viajes.add(new Viaje(1, new Usuario("frapujgal", "12345"), "Alcoy-Cocentaina", 5, 4, 2));
         viajes.add(new Flexible(2, new Usuario("javloplah", "12345"), "Alcoy-Onil", 20, 4, 6));
         viajes.add(new Exclusivo(3, new Usuario("Oscar", "12345"), "Alcoy-L'Orxa", 30, 4, 10));
         viajes.add(new Flexible(4, new Usuario("Felipe", "12345"), "Alcoy-Ibi", 15, 4, 3));
         viajes.add(new Exclusivo(5, new Usuario("Sergio", "12345"), "Alcoy-Castalla", 15, 4, 4));
-        viajes.add(new Cancelable(6, new Usuario("frapujgal", "12345"), "Alcoy-Formentera", 200, 4, 50));
-        viajes.add(new Exclusivo(7, new Usuario("frapujgal", "12345"), "Alcoy-Ibiza", 220, 4, 50));
-        viajes.add(new Cancelable(8, new Usuario("frapujgal", "12345"), "Alcoy-Mallorca", 250, 4, 50));
+        viajes.add(new Viaje(6, new Usuario("Denis", "12345"), "Alcoy-Formentera", 200, 4, 50));
+        viajes.add(new Cancelable(7, new Usuario("Jorge", "12345"), "Alcoy-Ibiza", 220, 4, 50));
+        viajes.add(new Cancelable(8, new Usuario("Joan", "12345"), "Alcoy-Mallorca", 250, 4, 50));
         viajes.add(new Flexible(9, new Usuario("frapujgal", "12345"), "Alcoy-Fuenlabrada", 100, 4, 30));
         viajes.add(new Cancelable(10, new Usuario("frapujgal", "12345"), "Alcoy-Teruel", 150, 4, 25));
     }
+
+
 }

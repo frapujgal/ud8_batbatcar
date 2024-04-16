@@ -25,7 +25,7 @@ public class UsuariosManager {
         boolean contrasenyaCorrecta = false;
 
         for (Usuario u: usuarios) {
-            if (u.getUsuario().equalsIgnoreCase(user)) {
+            if (u.getUsername().equalsIgnoreCase(user)) {
                 usuarioEncontrado = true;
                 if(u.getContraseña().equalsIgnoreCase(password)) {
                     contrasenyaCorrecta = true;

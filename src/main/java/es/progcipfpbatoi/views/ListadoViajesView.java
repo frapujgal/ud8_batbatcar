@@ -7,29 +7,18 @@ package es.progcipfpbatoi.views;
 
 import de.vandermeer.asciitable.AsciiTable;
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
-import es.progcipfpbatoi.model.entidades.Reserva;
 import es.progcipfpbatoi.model.entidades.types.Viaje;
-import org.w3c.dom.ls.LSOutput;
 
 import java.util.List;
-
 
 public class ListadoViajesView {
 
     private final List<Viaje> viajes;
-    private final Reserva reserva;
 
     private static final int ANCHO_TABLA = 100;
-    private static final int ANCHO_TABLA_RESERVA = 70;
 
     public ListadoViajesView(List<Viaje> viajes) {
         this.viajes = viajes;
-        this.reserva = null;
-    }
-
-    public ListadoViajesView(Reserva reserva) {
-        this.viajes = null;
-        this.reserva = reserva;
     }
 
     private AsciiTable buildASCIITable()  {
@@ -47,23 +36,6 @@ public class ListadoViajesView {
         return view;
     }
 
-    private AsciiTable buildASCIITable2(Reserva reserva)  {
-
-        AsciiTable view = new AsciiTable();
-        view.addRule();
-        view.addRow("*", "*");
-        view.addRule();
-        view.addRow(null, "Reserva con código " + reserva.getId());
-        view.addRule();
-        view.addRow("Usuario", reserva.getCliente().getUsuario());
-        view.addRule();
-        view.addRow("Plazas", reserva.getNumPlazasSolicitadas());
-        view.addRule();
-
-        view.setTextAlignment(TextAlignment.CENTER);
-        return view;
-    }
-
     @Override
     public String toString() {
         return buildASCIITable().render(ANCHO_TABLA);
@@ -73,18 +45,11 @@ public class ListadoViajesView {
         System.out.println(buildASCIITable().render(ANCHO_TABLA));
     }
 
-    public void visualizarReserva() {
-        System.out.println(buildASCIITable2(this.reserva).render(ANCHO_TABLA_RESERVA));
-    }
-
     private void generarFilasViajes (AsciiTable tabla){
-        
         // Implementa este método usando un bucle que itere sobre la lista de viajes y mostrando uno por fila.
         for (Viaje v : viajes) {
-            tabla.addRow(v.getId(), null, v.getRuta(), v.getPrecio(), v.getPropietario().getUsuario(), v.getTipoViaje(), v.getPlazasLibres(), v.isCanceladoString());
+            tabla.addRow(v.getId(), null, v.getRuta(), String.format("%.2f", v.getPrecio()), v.getPropietario().getUsername(), v.getTipoViaje(), (v.getPlazasOfertadas() - v.getPlazasReservadas()), v.isCanceladoString());
             tabla.addRule();
         }
-
-
     }
 }

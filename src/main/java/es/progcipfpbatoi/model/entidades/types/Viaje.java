@@ -2,7 +2,6 @@ package es.progcipfpbatoi.model.entidades.types;
 import es.progcipfpbatoi.model.entidades.Reserva;
 import es.progcipfpbatoi.model.entidades.Usuario;
 import java.util.ArrayList;
-import java.util.List;
 
 /*
  * Clase que representa a un viaje estándar
@@ -13,19 +12,19 @@ public class Viaje {
     private Usuario propietario;
     private String ruta;
     private int duracion;
-    private int plazasLibres;
+    private int plazasOfertadas;
     private int plazasReservadas;
     private double precio;
     private boolean cerrado;
     private boolean cancelado;
     private ArrayList<Reserva> reservas;
 
-    public Viaje(int id, Usuario propietario, String ruta, int duracion, int plazasLibres, double precio) {
+    public Viaje(int id, Usuario propietario, String ruta, int duracion, int plazasOfertadas, double precio) {
         this.id = id;
         this.propietario = propietario;
         this.ruta = ruta;
         this.duracion = duracion;
-        this.plazasLibres = plazasLibres;
+        this.plazasOfertadas = plazasOfertadas;
         this.plazasReservadas = 0;
         this.precio = precio;
         this.cerrado = false;
@@ -33,12 +32,12 @@ public class Viaje {
         this.reservas = new ArrayList<>();
     }
 
-    public Viaje(Usuario propietario, String ruta, int duracion, int plazasLibres, double precio) {
+    public Viaje(Usuario propietario, String ruta, int duracion, int plazasOfertadas, double precio) {
         this.id = 0;
         this.propietario = propietario;
         this.ruta = ruta;
         this.duracion = duracion;
-        this.plazasLibres = plazasLibres;
+        this.plazasOfertadas = plazasOfertadas;
         this.plazasReservadas = 0;
         this.precio = precio;
         this.cerrado = false;
@@ -62,12 +61,12 @@ public class Viaje {
         return ruta;
     }
 
-    public int getPlazasLibres() {
-        return plazasLibres;
+    public int getPlazasOfertadas() {
+        return plazasOfertadas;
     }
 
-    public void setPlazasLibres(int plazasLibres) {
-        this.plazasLibres = plazasLibres;
+    public void setPlazasOfertadas(int plazasOfertadas) {
+        this.plazasOfertadas = plazasOfertadas;
     }
 
     public int getPlazasReservadas() {
@@ -115,7 +114,9 @@ public class Viaje {
         return "Estándar";
     }
 
-
+    public ArrayList<Reserva> getReservas() {
+        return reservas;
+    }
 }
 
 
