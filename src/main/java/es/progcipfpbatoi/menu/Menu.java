@@ -25,22 +25,19 @@ public class Menu {
 
     public void iniciar(){
 
+        int opcionSeleccionada = 0;
+
         // Ampliar método para que se soliciten las opciones hasta que se indique la opción salir
         do {
             System.out.println("BatBatCar");
             System.out.println("=========");
             mostrarOpciones();
 
-            int opcionSeleccionada = solicitarOpcion();
-
-            if (opcionSeleccionada == OPCION_SALIR) {
-                System.out.println("¡Hasta pronto!");
-                return;
-            }
+            opcionSeleccionada = solicitarOpcion();
 
             ejecutarOpcion(opcionSeleccionada);
             System.out.println();
-        } while (true);
+        } while (opcionSeleccionada != OPCION_SALIR);
     }
 
     private void mostrarOpciones() {
@@ -70,7 +67,7 @@ public class Menu {
             case 6 -> viajesController.modificarReserva();
             case 7 -> viajesController.cancelarReserva();
             case 8 -> viajesController.buscarViaje();
-            default -> throw new UnsupportedOperationException("Por implementar");
+            case 9 -> GestorIO.print("¡Hasta pronto!");
         }
     }
 
