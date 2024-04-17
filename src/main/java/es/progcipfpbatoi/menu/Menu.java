@@ -69,7 +69,7 @@ public class Menu {
             case 5 -> viajesController.realizarReserva();
             case 6 -> viajesController.modificarReserva();
             case 7 -> viajesController.cancelarReserva();
-//            case 8 ->
+            case 8 -> viajesController.buscarViaje();
             default -> throw new UnsupportedOperationException("Por implementar");
         }
     }

@@ -37,6 +37,10 @@ public class ViajesController {
         System.out.println(new ListadoViajesView(viajes));
     }
 
+    public void listarViajes(List<Viaje> viajes) {
+        System.out.println(new ListadoViajesView(viajes));
+    }
+
     public void listarViajesCancelables() {
         List<Viaje> viajes = viajesManager.getViajesCancelables(this.usuario);
         System.out.println(new ListadoViajesView(viajes));
@@ -101,7 +105,6 @@ public class ViajesController {
             return;
         }
 
-        GestorIO.print("");
         GestorIO.print("1- Viaje Estándar");
         GestorIO.print("2- Viaje Cancelable");
         GestorIO.print("3- Viaje Exclusivo");
@@ -199,6 +202,57 @@ public class ViajesController {
         GestorIO.print("No se ha encontrado el viaje.");
     }
 
+    public void realizarReserva(List<Viaje> viajes) {
+        if(this.usuario == null) {
+            GestorIO.print("Por favor, ¡identifícate primero!");
+            return;
+        }
+
+        int idViaje = GestorIO.getInt("Introduzca el código de viaje a seleccionar");
+        int numPlazas = GestorIO.getInt("Introduzca el número de plazas a reservar");
+
+        for(Viaje v : viajes) {
+            if(v.getId() == idViaje) {
+                // comprobamos que el usuario no tenga una reserva en ese viaje
+                for (Reserva r : v.getReservas()) {
+                    if(r.getCliente().getUsername().equals(this.usuario.getUsername())) {
+                        GestorIO.print("El usuario " + this.usuario.getUsername() + " ya tiene una reserva en este viaje");
+                        return;
+                    }
+                }
+
+                // comprobamos que haya plazas suficientes en el viaje
+                if(v.getPlazasOfertadas() >= numPlazas) {
+                    v.setPlazasReservadas(v.getPlazasReservadas() + numPlazas);
+                    Reserva reserva = new Reserva(this.usuario ,numPlazas, v);
+                    v.addReserva(reserva);
+
+                    // si es exclusivo, ponemos plazas libres a 0 y cerramos viaje
+                    if(v instanceof Exclusivo) {
+                        v.setPlazasReservadas(v.getPlazasOfertadas());
+                        v.setCerrado(true);
+                    }
+
+                    // si ya no quedan plazas libres, cerramos viaje
+                    if(v.getPlazasReservadas() == v.getPlazasOfertadas()) {
+                        v.setCerrado(true);
+                    }
+
+                    GestorIO.print("Reserva realizada con éxito. A continuación se mostrará el ticket de confirmación.");
+
+                    ReservaView vistaReserva = new ReservaView(reserva);
+                    vistaReserva.visualizar();
+                    return;
+                }
+                else {
+                    GestorIO.print("Reserva rechazada. No quedan suficientes plazas.");
+                    return;
+                }
+            }
+        }
+        GestorIO.print("No se ha encontrado el viaje.");
+    }
+
     public void modificarReserva() {
         if(this.usuario == null) {
             GestorIO.print("Por favor, ¡identifícate primero!");
@@ -220,7 +274,7 @@ public class ViajesController {
                     r.getViaje().getReservas().remove(r);
                     r.getViaje().setPlazasReservadas(r.getViaje().getPlazasReservadas() - r.getNumPlazasSolicitadas() + plazas);
 
-                    Reserva nuevaReserva = new Reserva(this.usuario ,plazas, v);
+                    Reserva nuevaReserva = new Reserva(this.usuario, plazas, v);
                     r.getViaje().getReservas().add(nuevaReserva);
 
                     if(r.getViaje().getPlazasReservadas() == r.getViaje().getPlazasOfertadas()) {
@@ -262,44 +316,44 @@ public class ViajesController {
                 }
             }
         }
+    }
 
+    public void buscarViaje() {
+        if(this.usuario == null) {
+            GestorIO.print("Por favor, ¡identifícate primero!");
+            return;
+        }
 
+        String ciudad = GestorIO.getString("Introduzca la ciudad a la que desea viajar");
+        List<Viaje> viajes = new ArrayList<>();
 
+        for (Viaje v : viajesManager.findAll()) {
+            if (v.getRuta().contains("-" + ciudad) && !v.getPropietario().getUsername().equals(this.usuario.getUsername())) {
+                viajes.add(v);
+            }
+        }
 
-//        public List<Reserva> getReservas() {
-//            return reservas;
-//        }
-//
+        listarViajes(viajes);
+        if(viajes.isEmpty()) {
+            GestorIO.print("No hay viajes a " + ciudad);
+            return;
+        }
 
-//
-
-//
-//        public List<Reserva> getReservablesUsuario(Usuario usuario) {
-//            List<Reserva> reservablesUsuario = new ArrayList<>();
-//            for (Reserva r : reservas) {
-//                if(!r.getCliente().getUsername().equals(usuario.getUsername())) {
-//                    reservablesUsuario.add(r);
-//                }
-//            }
-//
-//            return reservablesUsuario;
-//        }
-//
-//        public void add(Reserva reserva) {
-//            reservas.add(reserva);
-//        }
-//
-//        public void remove(Reserva reserva) {
-//            reservas.remove(reserva);
-//        }
-//
-
-//
-
-
+        String seleccion;
+        do {
+            seleccion = GestorIO.getString("¿Quiere realizar una reserva?[S/N]");
+            if(seleccion.equals("S")) {
+                realizarReserva(viajes);
+            }
+            else if (seleccion.equals("N")) {
+                return;
+            }
+            else {
+                GestorIO.print("Selección incorrecta, la opción debe ser S/N");
+            }
+        } while (!seleccion.equals("S"));
 
 
     }
-
 
 }
