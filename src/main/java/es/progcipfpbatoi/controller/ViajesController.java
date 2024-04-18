@@ -308,7 +308,7 @@ public class ViajesController {
             if (r.getViaje() instanceof Cancelable || r.getViaje() instanceof Flexible) {
                 if (r.getId() == seleccion) {
                     r.getViaje().getReservas().remove(r);
-                    r.getViaje().setPlazasReservadas(0);
+                    r.getViaje().setPlazasReservadas(r.getViaje().getPlazasReservadas() - r.getNumPlazasSolicitadas());
                     r.getViaje().setCerrado(false);
 
                     GestorIO.print("Reserva del viaje de tipo Viaje " + r.getViaje().getTipoViaje() + " de " + r.getViaje().getPropietario().getUsername() + " código " + r.getViaje().getId() + " ruta " + r.getViaje().getRuta() + " cancelada con éxito.");
