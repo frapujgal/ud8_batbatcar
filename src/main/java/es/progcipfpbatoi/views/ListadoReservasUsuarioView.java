@@ -22,7 +22,7 @@ public class ListadoReservasUsuarioView {
         view.addRule();
         view.addRow("*", "*", "*", "*", "*", "*");
         view.addRule();
-        view.addRow(null, null, null, null, null, "Listado Viajes");
+        view.addRow(null, null, null, null, null, "Reservas de viajes");
         view.addRule();
         view.addRow("Cod.Reserva", "Cod.Viaje", "Propietario Viaje", null, "Plazas Reservadas", "Fecha");
         view.addRule();

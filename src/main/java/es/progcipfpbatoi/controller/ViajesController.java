@@ -310,6 +310,7 @@ public class ViajesController {
                 }
             }
         }
+        throw new ReservaNoValidaException("Error, no se ha encontrado reserva");
     }
 
     public void cancelarReserva() throws UsuarioSinEstablecerException, ReservaNoCancelableException {
