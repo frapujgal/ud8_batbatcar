@@ -6,7 +6,7 @@ import es.progcipfpbatoi.model.entidades.Reserva;
 
 public class ExceptionView {
 
-    private static final int ANCHO_TABLA = 50;
+    private static final int ANCHO_TABLA = 60;
     private String mensaje;
 
     public ExceptionView(String mensaje) {

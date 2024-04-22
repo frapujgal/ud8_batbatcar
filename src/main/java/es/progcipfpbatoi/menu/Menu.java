@@ -2,8 +2,7 @@ package es.progcipfpbatoi.menu;
 
 import es.progcipfpbatoi.controller.UsuariosController;
 import es.progcipfpbatoi.controller.ViajesController;
-import es.progcipfpbatoi.exceptions.FechaPasadaException;
-import es.progcipfpbatoi.exceptions.UsuarioSinEstablecerException;
+import es.progcipfpbatoi.exceptions.*;
 import es.progcipfpbatoi.model.managers.UsuariosManager;
 import es.progcipfpbatoi.utils.GestorIO;
 import es.progcipfpbatoi.views.ExceptionView;
@@ -74,7 +73,8 @@ public class Menu {
                 case 8 -> viajesController.buscarViaje();
                 case 9 -> GestorIO.print("¡Hasta pronto!");
             }
-        } catch (UsuarioSinEstablecerException | FechaPasadaException e) {
+        } catch (UsuarioSinEstablecerException | FechaPasadaException | ViajeNoValidoException | ReservaNoValidaException |
+                 ReservaNoCancelableException e) {
             System.err.println(new ExceptionView(e.getMessage()));
         }
         System.out.println();

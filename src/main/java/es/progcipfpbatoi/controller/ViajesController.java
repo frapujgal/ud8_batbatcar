@@ -1,7 +1,6 @@
 package es.progcipfpbatoi.controller;
 
-import es.progcipfpbatoi.exceptions.FechaPasadaException;
-import es.progcipfpbatoi.exceptions.UsuarioSinEstablecerException;
+import es.progcipfpbatoi.exceptions.*;
 import es.progcipfpbatoi.model.entidades.Reserva;
 import es.progcipfpbatoi.model.entidades.Usuario;
 import es.progcipfpbatoi.model.entidades.types.Cancelable;
@@ -128,22 +127,27 @@ public class ViajesController {
             throw new FechaPasadaException("Error, fecha no válida.");
         }
 
+        Viaje viaje = null;
         if(seleccion == 1) {
-            this.viajesManager.add(new Viaje(this.usuario, ruta, duracion, plazasDisponibles, precio, fechaHora));
+            viaje = new Viaje(this.usuario, ruta, duracion, plazasDisponibles, precio, fechaHora);
+            this.viajesManager.add(viaje);
         }
         else if(seleccion == 2) {
-            this.viajesManager.add(new Cancelable(this.usuario, ruta, duracion, plazasDisponibles, precio, fechaHora));
+            viaje = new Cancelable(this.usuario, ruta, duracion, plazasDisponibles, precio, fechaHora);
+            this.viajesManager.add(viaje);
         }
         else if(seleccion == 3) {
-            this.viajesManager.add(new Exclusivo(this.usuario, ruta, duracion, plazasDisponibles, precio, fechaHora));
+            viaje = new Exclusivo(this.usuario, ruta, duracion, plazasDisponibles, precio, fechaHora);
+            this.viajesManager.add(viaje);
         }
         else if(seleccion == 4) {
-            this.viajesManager.add(new Flexible(this.usuario, ruta, duracion, plazasDisponibles, precio, fechaHora));
+            viaje = new Flexible(this.usuario, ruta, duracion, plazasDisponibles, precio, fechaHora);
+            this.viajesManager.add(viaje);
         }
-        GestorIO.print("¡Viaje creado con éxito!");
+        GestorIO.print("Viaje de tipo " + viaje.getTipoViaje() +  " de " + viaje.getPropietario().getUsername() + " código " + viaje.getId() + " ruta " + viaje.getRuta() + " añadido con éxito");
     }
 
-    public void cancelarViaje() throws UsuarioSinEstablecerException {
+    public void cancelarViaje() throws UsuarioSinEstablecerException, ViajeNoValidoException {
         if(this.usuario == null) {
             throw new UsuarioSinEstablecerException("Por favor, ¡identifícate primero!");
         }
@@ -158,10 +162,10 @@ public class ViajesController {
                 return;
             }
         }
-        GestorIO.print("No se ha encontrado el viaje.");
+        throw new ViajeNoValidoException("No se ha encontrado el viaje.");
     }
 
-    public void realizarReserva() throws UsuarioSinEstablecerException {
+    public void realizarReserva() throws UsuarioSinEstablecerException, ReservaNoValidaException, ViajeNoValidoException {
         if(this.usuario == null) {
             throw new UsuarioSinEstablecerException("Por favor, ¡identifícate primero!");
         }
@@ -204,12 +208,11 @@ public class ViajesController {
                     return;
                 }
                 else {
-                    GestorIO.print("Reserva rechazada. No quedan suficientes plazas.");
-                    return;
+                    throw new ReservaNoValidaException("Reserva rechazada. No quedan suficientes plazas.");
                 }
             }
         }
-        GestorIO.print("No se ha encontrado el viaje.");
+        throw new ViajeNoValidoException("No se ha encontrado el viaje.");
     }
 
     public void realizarReserva(List<Viaje> viajes) throws UsuarioSinEstablecerException {
@@ -303,7 +306,7 @@ public class ViajesController {
         }
     }
 
-    public void cancelarReserva() throws UsuarioSinEstablecerException {
+    public void cancelarReserva() throws UsuarioSinEstablecerException, ReservaNoCancelableException {
         if(this.usuario == null) {
             throw new UsuarioSinEstablecerException("Por favor, ¡identifícate primero!");
         }
@@ -323,6 +326,7 @@ public class ViajesController {
                 }
             }
         }
+        throw new ReservaNoCancelableException("Error, la reserva seleccionada no puede ser cancelada");
     }
 
     public void buscarViaje() throws UsuarioSinEstablecerException {
