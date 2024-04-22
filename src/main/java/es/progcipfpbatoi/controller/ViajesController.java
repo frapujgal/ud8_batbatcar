@@ -179,8 +179,7 @@ public class ViajesController {
                 // comprobamos que el usuario no tenga una reserva en ese viaje
                 for (Reserva r : v.getReservas()) {
                     if(r.getCliente().getUsername().equals(this.usuario.getUsername())) {
-                        GestorIO.print("El usuario " + this.usuario.getUsername() + " ya tiene una reserva en este viaje");
-                        return;
+                        throw new ReservaNoValidaException("El usuario " + this.usuario.getUsername() + " ya tiene una reserva en este viaje");
                     }
                 }
 
@@ -215,7 +214,7 @@ public class ViajesController {
         throw new ViajeNoValidoException("No se ha encontrado el viaje.");
     }
 
-    public void realizarReserva(List<Viaje> viajes) throws UsuarioSinEstablecerException {
+    public void realizarReserva(List<Viaje> viajes) throws UsuarioSinEstablecerException, ReservaNoValidaException, ViajeNoValidoException {
         if(this.usuario == null) {
             throw new UsuarioSinEstablecerException("Por favor, ¡identifícate primero!");
         }
@@ -228,8 +227,7 @@ public class ViajesController {
                 // comprobamos que el usuario no tenga una reserva en ese viaje
                 for (Reserva r : v.getReservas()) {
                     if(r.getCliente().getUsername().equals(this.usuario.getUsername())) {
-                        GestorIO.print("El usuario " + this.usuario.getUsername() + " ya tiene una reserva en este viaje");
-                        return;
+                        throw new ReservaNoValidaException("El usuario " + this.usuario.getUsername() + " ya tiene una reserva en este viaje");
                     }
                 }
 
@@ -257,15 +255,14 @@ public class ViajesController {
                     return;
                 }
                 else {
-                    GestorIO.print("Reserva rechazada. No quedan suficientes plazas.");
-                    return;
+                    throw new ReservaNoValidaException("Reserva rechazada. No quedan suficientes plazas.");
                 }
             }
         }
-        GestorIO.print("No se ha encontrado el viaje.");
+        throw new ViajeNoValidoException("No se ha encontrado el viaje.");
     }
 
-    public void modificarReserva() throws UsuarioSinEstablecerException {
+    public void modificarReserva() throws UsuarioSinEstablecerException, ReservaNoValidaException {
         if(this.usuario == null) {
             throw new UsuarioSinEstablecerException("Por favor, ¡identifícate primero!");
         }
@@ -278,8 +275,7 @@ public class ViajesController {
             for (Reserva r : v.getReservas()) {
                 if(r.getId() == seleccion) {
                     if (r.getViaje().getPlazasOfertadas() < plazas) {
-                        GestorIO.print("No hay suficientes plazas.");
-                        return;
+                        throw new ReservaNoValidaException("No hay suficientes plazas.");
                     }
 
                     r.getViaje().getReservas().remove(r);
@@ -329,7 +325,7 @@ public class ViajesController {
         throw new ReservaNoCancelableException("Error, la reserva seleccionada no puede ser cancelada");
     }
 
-    public void buscarViaje() throws UsuarioSinEstablecerException {
+    public void buscarViaje() throws UsuarioSinEstablecerException, ViajeNoValidoException, ReservaNoValidaException {
         if(this.usuario == null) {
             throw new UsuarioSinEstablecerException("Por favor, ¡identifícate primero!");
         }
@@ -345,8 +341,7 @@ public class ViajesController {
 
         listarViajes(viajes);
         if(viajes.isEmpty()) {
-            GestorIO.print("No hay viajes a " + ciudad);
-            return;
+            throw new ViajeNoValidoException("Error, no hay viajes a " + ciudad);
         }
 
         String seleccion;
@@ -362,8 +357,6 @@ public class ViajesController {
                 GestorIO.print("Selección incorrecta, la opción debe ser S/N");
             }
         } while (!seleccion.equals("S"));
-
-
     }
 
 }
