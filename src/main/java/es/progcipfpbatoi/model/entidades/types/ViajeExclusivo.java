@@ -4,18 +4,18 @@ import es.progcipfpbatoi.model.entidades.Usuario;
 
 import java.time.LocalDateTime;
 
-public class Cancelable extends Viaje {
+public class ViajeExclusivo extends Viaje {
 
-    public Cancelable(int id, Usuario propietario, String ruta, int duracion, int plazasLibres, double precio, LocalDateTime fecha) {
+    public ViajeExclusivo(int id, Usuario propietario, String ruta, int duracion, int plazasLibres, double precio, LocalDateTime fecha) {
         super(id, propietario, ruta, duracion, plazasLibres, precio, fecha);
     }
 
-    public Cancelable(Usuario propietario, String ruta, int duracion, int plazasLibres, double precio, LocalDateTime fecha) {
+    public ViajeExclusivo(Usuario propietario, String ruta, int duracion, int plazasLibres, double precio, LocalDateTime fecha) {
         super(propietario, ruta, duracion, plazasLibres, precio, fecha);
     }
 
     @Override
     public String getTipoViaje() {
-        return "Viaje Cancelable";
+        return "Viaje Exclusivo";
     }
 }

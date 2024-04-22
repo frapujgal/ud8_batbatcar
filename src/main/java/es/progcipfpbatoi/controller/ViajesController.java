@@ -3,9 +3,9 @@ package es.progcipfpbatoi.controller;
 import es.progcipfpbatoi.exceptions.*;
 import es.progcipfpbatoi.model.entidades.Reserva;
 import es.progcipfpbatoi.model.entidades.Usuario;
-import es.progcipfpbatoi.model.entidades.types.Cancelable;
-import es.progcipfpbatoi.model.entidades.types.Exclusivo;
-import es.progcipfpbatoi.model.entidades.types.Flexible;
+import es.progcipfpbatoi.model.entidades.types.ViajeCancelable;
+import es.progcipfpbatoi.model.entidades.types.ViajeExclusivo;
+import es.progcipfpbatoi.model.entidades.types.ViajeFlexible;
 import es.progcipfpbatoi.model.entidades.types.Viaje;
 import es.progcipfpbatoi.model.managers.ViajesManager;
 import es.progcipfpbatoi.utils.GestorIO;
@@ -68,7 +68,7 @@ public class ViajesController {
         List<Reserva> reservas = new ArrayList<>();
 
         for (Reserva r : getReservasUsuario(this.usuario)) {
-            if(r.getViaje() instanceof Flexible) {
+            if(r.getViaje() instanceof ViajeFlexible) {
                 reservas.add(r);
             }
         }
@@ -79,7 +79,7 @@ public class ViajesController {
         List<Reserva> reservas = new ArrayList<>();
 
         for (Reserva r : getReservasUsuario(this.usuario)) {
-            if(r.getViaje() instanceof Cancelable) {
+            if(r.getViaje() instanceof ViajeCancelable) {
                 reservas.add(r);
             }
         }
@@ -133,15 +133,15 @@ public class ViajesController {
             this.viajesManager.add(viaje);
         }
         else if(seleccion == 2) {
-            viaje = new Cancelable(this.usuario, ruta, duracion, plazasDisponibles, precio, fechaHora);
+            viaje = new ViajeCancelable(this.usuario, ruta, duracion, plazasDisponibles, precio, fechaHora);
             this.viajesManager.add(viaje);
         }
         else if(seleccion == 3) {
-            viaje = new Exclusivo(this.usuario, ruta, duracion, plazasDisponibles, precio, fechaHora);
+            viaje = new ViajeExclusivo(this.usuario, ruta, duracion, plazasDisponibles, precio, fechaHora);
             this.viajesManager.add(viaje);
         }
         else if(seleccion == 4) {
-            viaje = new Flexible(this.usuario, ruta, duracion, plazasDisponibles, precio, fechaHora);
+            viaje = new ViajeFlexible(this.usuario, ruta, duracion, plazasDisponibles, precio, fechaHora);
             this.viajesManager.add(viaje);
         }
         GestorIO.print("Viaje de tipo " + viaje.getTipoViaje() +  " de " + viaje.getPropietario().getUsername() + " código " + viaje.getId() + " ruta " + viaje.getRuta() + " añadido con éxito");
@@ -190,7 +190,7 @@ public class ViajesController {
                     v.addReserva(reserva);
 
                     // si es exclusivo, ponemos plazas libres a 0 y cerramos viaje
-                    if(v instanceof Exclusivo) {
+                    if(v instanceof ViajeExclusivo) {
                         v.setPlazasReservadas(v.getPlazasOfertadas());
                         v.setCerrado(true);
                     }
@@ -238,7 +238,7 @@ public class ViajesController {
                     v.addReserva(reserva);
 
                     // si es exclusivo, ponemos plazas libres a 0 y cerramos viaje
-                    if(v instanceof Exclusivo) {
+                    if(v instanceof ViajeExclusivo) {
                         v.setPlazasReservadas(v.getPlazasOfertadas());
                         v.setCerrado(true);
                     }
@@ -311,7 +311,7 @@ public class ViajesController {
         int seleccion = GestorIO.getInt("Introduzca el código de reserva a modificar");
 
         for (Reserva r : getReservasUsuario(this.usuario)) {
-            if (r.getViaje() instanceof Cancelable || r.getViaje() instanceof Flexible) {
+            if (r.getViaje() instanceof ViajeCancelable || r.getViaje() instanceof ViajeFlexible) {
                 if (r.getId() == seleccion) {
                     r.getViaje().getReservas().remove(r);
                     r.getViaje().setPlazasReservadas(r.getViaje().getPlazasReservadas() - r.getNumPlazasSolicitadas());

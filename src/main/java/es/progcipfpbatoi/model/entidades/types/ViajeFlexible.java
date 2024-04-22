@@ -4,13 +4,13 @@ import es.progcipfpbatoi.model.entidades.Usuario;
 
 import java.time.LocalDateTime;
 
-public class Flexible extends Cancelable {
+public class ViajeFlexible extends ViajeCancelable {
 
-    public Flexible(int id, Usuario propietario, String ruta, int duracion, int plazasLibres, double precio, LocalDateTime fecha) {
+    public ViajeFlexible(int id, Usuario propietario, String ruta, int duracion, int plazasLibres, double precio, LocalDateTime fecha) {
         super(id, propietario, ruta, duracion, plazasLibres, precio, fecha);
     }
 
-    public Flexible(Usuario propietario, String ruta, int duracion, int plazasLibres, double precio, LocalDateTime fecha) {
+    public ViajeFlexible(Usuario propietario, String ruta, int duracion, int plazasLibres, double precio, LocalDateTime fecha) {
         super(propietario, ruta, duracion, plazasLibres, precio, fecha);
     }
 
