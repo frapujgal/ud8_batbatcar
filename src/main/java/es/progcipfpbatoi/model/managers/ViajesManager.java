@@ -99,7 +99,7 @@ public class ViajesManager {
         viajes.add(new ViajeExclusivo(3, new Usuario("Oscar", "12345"), "Alcoy-L'Orxa", 30, 4, 10, LocalDateTime.parse("17-05-2024T08:30", DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH:mm"))));
         viajes.add(new ViajeFlexible(4, new Usuario("Felipe", "12345"), "Alcoy-Ibi", 15, 4, 3, LocalDateTime.parse("18-05-2024T09:30", DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH:mm"))));
         viajes.add(new ViajeExclusivo(5, new Usuario("Sergio", "12345"), "Alcoy-Castalla", 15, 4, 4, LocalDateTime.parse("19-05-2024T10:30", DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH:mm"))));
-        viajes.add(new Viaje(6, new Usuario("Denis", "12345"), "Alcoy-Formentera", 200, 4, 50, LocalDateTime.parse("20-05-2024T11:30", DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH:mm"))));
+        viajes.add(new Viaje(6, new Usuario("Denis", "12345"), "Alcoy-Formentera", 200, 4, 50, LocalDateTime.parse("20-04-2024T11:30", DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH:mm"))));
         viajes.add(new ViajeCancelable(7, new Usuario("Jorge", "12345"), "Alcoy-Ibiza", 220, 4, 50, LocalDateTime.parse("21-05-2024T12:30", DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH:mm"))));
         viajes.add(new ViajeCancelable(8, new Usuario("Joan", "12345"), "Alcoy-Mallorca", 250, 4, 50, LocalDateTime.parse("22-05-2024T13:30", DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH:mm"))));
         viajes.add(new ViajeFlexible(9, new Usuario("frapujgal", "12345"), "Alcoy-Fuenlabrada", 100, 4, 30, LocalDateTime.parse("23-05-2024T14:30", DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH:mm"))));

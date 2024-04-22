@@ -176,6 +176,11 @@ public class ViajesController {
 
         for(Viaje v : viajesManager.getViajesReservables(this.usuario)) {
             if(v.getId() == idViaje) {
+
+                if (v.getFecha().isBefore(LocalDateTime.now())) {
+                    throw new ReservaNoValidaException("Error, el viaje ya se ha realizado");
+                }
+
                 // comprobamos que el usuario no tenga una reserva en ese viaje
                 for (Reserva r : v.getReservas()) {
                     if(r.getCliente().getUsername().equals(this.usuario.getUsername())) {
@@ -224,6 +229,11 @@ public class ViajesController {
 
         for(Viaje v : viajes) {
             if(v.getId() == idViaje) {
+
+                if (v.getFecha().isBefore(LocalDateTime.now())) {
+                    throw new ReservaNoValidaException("Error, el viaje ya se ha realizado");
+                }
+
                 // comprobamos que el usuario no tenga una reserva en ese viaje
                 for (Reserva r : v.getReservas()) {
                     if(r.getCliente().getUsername().equals(this.usuario.getUsername())) {

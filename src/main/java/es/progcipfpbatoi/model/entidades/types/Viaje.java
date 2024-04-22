@@ -127,6 +127,10 @@ public class Viaje {
     public ArrayList<Reserva> getReservas() {
         return reservas;
     }
+
+    public LocalDateTime getFecha() {
+        return fecha;
+    }
 }
 
 
