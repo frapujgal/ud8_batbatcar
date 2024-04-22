@@ -165,7 +165,7 @@ public class ViajesController {
         throw new ViajeNoValidoException("No se ha encontrado el viaje.");
     }
 
-    public void realizarReserva() throws UsuarioSinEstablecerException, ReservaNoValidaException, ViajeNoValidoException {
+    public void realizarReserva() throws UsuarioSinEstablecerException, ReservaNoValidaException, ViajeNoValidoException, FechaPasadaException {
         if(this.usuario == null) {
             throw new UsuarioSinEstablecerException("Por favor, ¡identifícate primero!");
         }
@@ -178,7 +178,7 @@ public class ViajesController {
             if(v.getId() == idViaje) {
 
                 if (v.getFecha().isBefore(LocalDateTime.now())) {
-                    throw new ReservaNoValidaException("Error, el viaje ya se ha realizado");
+                    throw new FechaPasadaException("Error, el viaje ya se ha realizado");
                 }
 
                 // comprobamos que el usuario no tenga una reserva en ese viaje
@@ -219,7 +219,7 @@ public class ViajesController {
         throw new ViajeNoValidoException("No se ha encontrado el viaje.");
     }
 
-    public void realizarReserva(List<Viaje> viajes) throws UsuarioSinEstablecerException, ReservaNoValidaException, ViajeNoValidoException {
+    public void realizarReserva(List<Viaje> viajes) throws UsuarioSinEstablecerException, ReservaNoValidaException, ViajeNoValidoException, FechaPasadaException {
         if(this.usuario == null) {
             throw new UsuarioSinEstablecerException("Por favor, ¡identifícate primero!");
         }
@@ -231,7 +231,7 @@ public class ViajesController {
             if(v.getId() == idViaje) {
 
                 if (v.getFecha().isBefore(LocalDateTime.now())) {
-                    throw new ReservaNoValidaException("Error, el viaje ya se ha realizado");
+                    throw new FechaPasadaException("Error, el viaje ya se ha realizado");
                 }
 
                 // comprobamos que el usuario no tenga una reserva en ese viaje
@@ -335,7 +335,7 @@ public class ViajesController {
         throw new ReservaNoCancelableException("Error, la reserva seleccionada no puede ser cancelada");
     }
 
-    public void buscarViaje() throws UsuarioSinEstablecerException, ViajeNoValidoException, ReservaNoValidaException {
+    public void buscarViaje() throws UsuarioSinEstablecerException, ViajeNoValidoException, ReservaNoValidaException, FechaPasadaException {
         if(this.usuario == null) {
             throw new UsuarioSinEstablecerException("Por favor, ¡identifícate primero!");
         }
