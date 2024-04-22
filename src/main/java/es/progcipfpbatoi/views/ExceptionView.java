@@ -3,30 +3,21 @@ package es.progcipfpbatoi.views;
 import de.vandermeer.asciitable.AsciiTable;
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
 import es.progcipfpbatoi.model.entidades.Reserva;
-import es.progcipfpbatoi.model.entidades.types.Viaje;
 
-public class ReservaView {
+public class ExceptionView {
 
-    private static final int ANCHO_TABLA = 70;
-    private final Reserva reserva;
+    private static final int ANCHO_TABLA = 50;
+    private String mensaje;
 
-    public ReservaView(Reserva reserva) {
-        this.reserva = reserva;
+    public ExceptionView(String mensaje) {
+        this.mensaje = mensaje;
     }
 
     private AsciiTable buildASCIITable()  {
 
         AsciiTable view = new AsciiTable();
         view.addRule();
-        view.addRow("*", "*");
-        view.addRule();
-        view.addRow(null, "Reserva con código " + reserva.getId());
-        view.addRule();
-        view.addRow("Usuario", reserva.getCliente().getUsername());
-        view.addRule();
-        view.addRow("Plazas", reserva.getNumPlazasSolicitadas());
-        view.addRule();
-        view.addRow("Fecha", reserva.getStringFecha());
+        view.addRow(mensaje);
         view.addRule();
 
         view.setTextAlignment(TextAlignment.CENTER);
@@ -41,5 +32,4 @@ public class ReservaView {
     public void visualizar() {
         System.out.println(buildASCIITable().render(ANCHO_TABLA));
     }
-
 }

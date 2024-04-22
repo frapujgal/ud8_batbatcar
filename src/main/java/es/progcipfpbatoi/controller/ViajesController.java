@@ -1,5 +1,7 @@
 package es.progcipfpbatoi.controller;
 
+import es.progcipfpbatoi.exceptions.FechaPasadaException;
+import es.progcipfpbatoi.exceptions.UsuarioSinEstablecerException;
 import es.progcipfpbatoi.model.entidades.Reserva;
 import es.progcipfpbatoi.model.entidades.Usuario;
 import es.progcipfpbatoi.model.entidades.types.Cancelable;
@@ -12,8 +14,10 @@ import es.progcipfpbatoi.views.ListadoReservasUsuarioView;
 import es.progcipfpbatoi.views.ListadoViajesView;
 import es.progcipfpbatoi.views.ReservaView;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
 
 public class ViajesController {
 
@@ -99,10 +103,9 @@ public class ViajesController {
     /**
      * Añade un viaje al sistema, preguntando previamente por toda la información necesaria para crearlo.
      */
-    public void anyadirViaje() {
+    public void anyadirViaje() throws UsuarioSinEstablecerException, FechaPasadaException {
         if(this.usuario == null) {
-            GestorIO.print("Por favor, ¡identifícate primero!");
-            return;
+            throw new UsuarioSinEstablecerException("Por favor, ¡identifícate primero!");
         }
 
         GestorIO.print("1- Viaje Estándar");
@@ -112,29 +115,37 @@ public class ViajesController {
 
         int seleccion = GestorIO.getInt("Seleccione el tipo de viaje", 1, 4);
         String ruta = GestorIO.getString("Introduzca la ruta a realizar (Ej: Alcoy-Alicante)");
+        String fecha = GestorIO.getString("Introduzca la fecha (Ej. 10-10-2024)");
+        String hora = GestorIO.getString("Introduzca la hora (Ej. 23:15)");
         int duracion = GestorIO.getInt("Introduce la duración del viaje en minutos");
         double precio = GestorIO.getFloat("Introduce el precio de cada plaza");
         int plazasDisponibles = GestorIO.getInt("Introduce el número de plazas disponibles");
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH:mm");
+        LocalDateTime fechaHora = LocalDateTime.parse(fecha + "T" + hora, formatter);
+
+        if (fechaHora.isBefore(LocalDateTime.now())) {
+            throw new FechaPasadaException("Error, fecha no válida.");
+        }
+
         if(seleccion == 1) {
-            this.viajesManager.add(new Viaje(this.usuario, ruta, duracion, plazasDisponibles, precio));
+            this.viajesManager.add(new Viaje(this.usuario, ruta, duracion, plazasDisponibles, precio, fechaHora));
         }
         else if(seleccion == 2) {
-            this.viajesManager.add(new Cancelable(this.usuario, ruta, duracion, plazasDisponibles, precio));
+            this.viajesManager.add(new Cancelable(this.usuario, ruta, duracion, plazasDisponibles, precio, fechaHora));
         }
         else if(seleccion == 3) {
-            this.viajesManager.add(new Exclusivo(this.usuario, ruta, duracion, plazasDisponibles, precio));
+            this.viajesManager.add(new Exclusivo(this.usuario, ruta, duracion, plazasDisponibles, precio, fechaHora));
         }
         else if(seleccion == 4) {
-            this.viajesManager.add(new Flexible(this.usuario, ruta, duracion, plazasDisponibles, precio));
+            this.viajesManager.add(new Flexible(this.usuario, ruta, duracion, plazasDisponibles, precio, fechaHora));
         }
         GestorIO.print("¡Viaje creado con éxito!");
     }
 
-    public void cancelarViaje() {
+    public void cancelarViaje() throws UsuarioSinEstablecerException {
         if(this.usuario == null) {
-            GestorIO.print("Por favor, ¡identifícate primero!");
-            return;
+            throw new UsuarioSinEstablecerException("Por favor, ¡identifícate primero!");
         }
 
         listarViajesCancelables();
@@ -150,10 +161,9 @@ public class ViajesController {
         GestorIO.print("No se ha encontrado el viaje.");
     }
 
-    public void realizarReserva() {
+    public void realizarReserva() throws UsuarioSinEstablecerException {
         if(this.usuario == null) {
-            GestorIO.print("Por favor, ¡identifícate primero!");
-            return;
+            throw new UsuarioSinEstablecerException("Por favor, ¡identifícate primero!");
         }
 
         listarViajesReservables();
@@ -202,10 +212,9 @@ public class ViajesController {
         GestorIO.print("No se ha encontrado el viaje.");
     }
 
-    public void realizarReserva(List<Viaje> viajes) {
+    public void realizarReserva(List<Viaje> viajes) throws UsuarioSinEstablecerException {
         if(this.usuario == null) {
-            GestorIO.print("Por favor, ¡identifícate primero!");
-            return;
+            throw new UsuarioSinEstablecerException("Por favor, ¡identifícate primero!");
         }
 
         int idViaje = GestorIO.getInt("Introduzca el código de viaje a seleccionar");
@@ -253,10 +262,9 @@ public class ViajesController {
         GestorIO.print("No se ha encontrado el viaje.");
     }
 
-    public void modificarReserva() {
+    public void modificarReserva() throws UsuarioSinEstablecerException {
         if(this.usuario == null) {
-            GestorIO.print("Por favor, ¡identifícate primero!");
-            return;
+            throw new UsuarioSinEstablecerException("Por favor, ¡identifícate primero!");
         }
 
         listarReservasModificables(this.usuario);
@@ -295,10 +303,9 @@ public class ViajesController {
         }
     }
 
-    public void cancelarReserva() {
+    public void cancelarReserva() throws UsuarioSinEstablecerException {
         if(this.usuario == null) {
-            GestorIO.print("Por favor, ¡identifícate primero!");
-            return;
+            throw new UsuarioSinEstablecerException("Por favor, ¡identifícate primero!");
         }
 
         listarReservas(this.usuario);
@@ -318,10 +325,9 @@ public class ViajesController {
         }
     }
 
-    public void buscarViaje() {
+    public void buscarViaje() throws UsuarioSinEstablecerException {
         if(this.usuario == null) {
-            GestorIO.print("Por favor, ¡identifícate primero!");
-            return;
+            throw new UsuarioSinEstablecerException("Por favor, ¡identifícate primero!");
         }
 
         String ciudad = GestorIO.getString("Introduzca la ciudad a la que desea viajar");

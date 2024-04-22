@@ -1,6 +1,8 @@
 package es.progcipfpbatoi.model.entidades.types;
 import es.progcipfpbatoi.model.entidades.Reserva;
 import es.progcipfpbatoi.model.entidades.Usuario;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 /*
@@ -18,8 +20,9 @@ public class Viaje {
     private boolean cerrado;
     private boolean cancelado;
     private ArrayList<Reserva> reservas;
+    private LocalDateTime fecha;
 
-    public Viaje(int id, Usuario propietario, String ruta, int duracion, int plazasOfertadas, double precio) {
+    public Viaje(int id, Usuario propietario, String ruta, int duracion, int plazasOfertadas, double precio, LocalDateTime fecha) {
         this.id = id;
         this.propietario = propietario;
         this.ruta = ruta;
@@ -30,9 +33,10 @@ public class Viaje {
         this.cerrado = false;
         this.cancelado = false;
         this.reservas = new ArrayList<>();
+        this.fecha = fecha;
     }
 
-    public Viaje(Usuario propietario, String ruta, int duracion, int plazasOfertadas, double precio) {
+    public Viaje(Usuario propietario, String ruta, int duracion, int plazasOfertadas, double precio, LocalDateTime fecha) {
         this.id = 0;
         this.propietario = propietario;
         this.ruta = ruta;
@@ -43,6 +47,7 @@ public class Viaje {
         this.cerrado = false;
         this.cancelado = false;
         this.reservas = new ArrayList<>();
+        this.fecha = fecha;
     }
 
     public int getId() {
@@ -83,6 +88,11 @@ public class Viaje {
 
     public double getPrecio() {
         return precio;
+    }
+
+    public String getStringFecha() {
+        return String.format("%02d", this.fecha.getDayOfMonth()) + "-" + String.format("%02d", this.fecha.getMonthValue()) + "-" + this.fecha.getYear() +
+                " a las " + this.fecha.getHour() + ":" + String.format("%02d", this.fecha.getMinute());
     }
 
     public String isCanceladoString() {

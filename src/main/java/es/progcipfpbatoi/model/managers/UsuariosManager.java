@@ -1,5 +1,6 @@
 package es.progcipfpbatoi.model.managers;
 
+import es.progcipfpbatoi.exceptions.CredencialesInvalidasException;
 import es.progcipfpbatoi.model.entidades.Usuario;
 import es.progcipfpbatoi.utils.GestorIO;
 
@@ -20,7 +21,7 @@ public class UsuariosManager {
         return usuarios;
     }
 
-    public boolean comprobarUsuario(String user, String password) {
+    public boolean comprobarUsuario(String user, String password) throws CredencialesInvalidasException {
         boolean usuarioEncontrado = false;
         boolean contrasenyaCorrecta = false;
 
@@ -36,10 +37,10 @@ public class UsuariosManager {
         }
 
         if (!usuarioEncontrado) {
-            GestorIO.print("Error, el usuario introducido no existe");
+            throw new CredencialesInvalidasException("Error, el usuario introducido no existe");
         }
         else if (!contrasenyaCorrecta) {
-            GestorIO.print("Error, la contraseña introducida es errónea");
+            throw new CredencialesInvalidasException("Error, la contraseña introducida es errónea");
         }
 
         return false;

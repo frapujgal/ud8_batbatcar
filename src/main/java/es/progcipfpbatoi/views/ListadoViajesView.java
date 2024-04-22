@@ -25,11 +25,11 @@ public class ListadoViajesView {
         
         AsciiTable view = new AsciiTable();
         view.addRule();
-        view.addRow("*", "*", "*", "*", "*", "*", "*", "*");
+        view.addRow("*", "*", "*", "*", "*", "*", "*", "*", "*");
         view.addRule();
-        view.addRow(null, null, null, null, null, null, null, "Listado Viajes");
+        view.addRow(null, null, null, null, null, null, null, null, "Listado Viajes");
         view.addRule();
-        view.addRow("Cod. Viaje", null, "Ruta", "Precio", "Propietario", "Tipo", "Plazas Disponibles", "Cancelado");
+        view.addRow("Cod. Viaje", null, "Ruta", "Fecha salida", "Precio", "Propietario", "Tipo", "Plazas Disponibles", "Cancelado");
         view.addRule();
         generarFilasViajes(view);
         view.setTextAlignment(TextAlignment.CENTER);
@@ -48,7 +48,7 @@ public class ListadoViajesView {
     private void generarFilasViajes (AsciiTable tabla){
         // Implementa este método usando un bucle que itere sobre la lista de viajes y mostrando uno por fila.
         for (Viaje v : viajes) {
-            tabla.addRow(v.getId(), null, v.getRuta(), String.format("%.2f", v.getPrecio()), v.getPropietario().getUsername(), v.getTipoViaje(), (v.getPlazasOfertadas() - v.getPlazasReservadas()), v.isCanceladoString());
+            tabla.addRow(v.getId(), null, v.getRuta(), v.getStringFecha(), String.format("%.2f", v.getPrecio()), v.getPropietario().getUsername(), v.getTipoViaje(), (v.getPlazasOfertadas() - v.getPlazasReservadas()), v.isCanceladoString());
             tabla.addRule();
         }
     }

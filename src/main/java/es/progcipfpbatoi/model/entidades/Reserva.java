@@ -2,12 +2,15 @@ package es.progcipfpbatoi.model.entidades;
 
 import es.progcipfpbatoi.model.entidades.types.Viaje;
 
+import java.time.LocalDateTime;
+
 public class Reserva {
 
     private int id;
     private Usuario cliente;
     private int numPlazasSolicitadas;
     private Viaje viaje;
+    private LocalDateTime fecha;
     private static int contador = 1;
 
     public Reserva(Usuario cliente, int numPlazasSolicitadas, Viaje viaje) {
@@ -15,6 +18,7 @@ public class Reserva {
         this.cliente = cliente;
         this.numPlazasSolicitadas = numPlazasSolicitadas;
         this.viaje = viaje;
+        this.fecha = LocalDateTime.now();
         this.contador++;
     }
 
@@ -44,5 +48,10 @@ public class Reserva {
 
     public Viaje getViaje() {
         return viaje;
+    }
+
+    public String getStringFecha() {
+        return String.format("%02d", this.fecha.getDayOfMonth()) + "-" + String.format("%02d", this.fecha.getMonthValue()) + "-" + this.fecha.getYear() +
+                " a las " + this.fecha.getHour() + ":" + String.format("%02d", this.fecha.getMinute());
     }
 }
