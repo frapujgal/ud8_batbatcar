@@ -3,10 +3,15 @@ package es.progcipfpbatoi.menu;
 import es.progcipfpbatoi.controller.UsuariosController;
 import es.progcipfpbatoi.controller.ViajesController;
 import es.progcipfpbatoi.exceptions.*;
+import es.progcipfpbatoi.model.entidades.types.Opcion;
+import es.progcipfpbatoi.model.entidades.types.OpcionListarViajes;
 import es.progcipfpbatoi.model.managers.UsuariosManager;
 import es.progcipfpbatoi.utils.GestorIO;
 import es.progcipfpbatoi.views.ExceptionView;
 import es.progcipfpbatoi.views.ListadoViajesView;
+
+import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Clase que gestiona el menú de opciones. A partir de esta clase se ejecutan
@@ -20,64 +25,55 @@ public class Menu {
     
     private ViajesController viajesController;
     private UsuariosController usuariosController;
-    
-    public Menu() {
+    private String titulo;
+    private ArrayList<Opcion> opciones;
+
+    public Menu(String titulo) {
         this.viajesController = new ViajesController();
         this.usuariosController = new UsuariosController();
+        this.titulo = titulo;
+        this.opciones = new ArrayList<>();
     }
 
-    public void iniciar(){
-
-        int opcionSeleccionada = 0;
-
-        // Ampliar método para que se soliciten las opciones hasta que se indique la opción salir
-        do {
-            System.out.println("BatBatCar");
-            System.out.println("=========");
-            mostrarOpciones();
-
-            opcionSeleccionada = solicitarOpcion();
-
-            ejecutarOpcion(opcionSeleccionada);
-            System.out.println();
-        } while (opcionSeleccionada != OPCION_SALIR);
+    public void anyadir(Opcion opcion) {
+        this.opciones.add(opcion);
     }
 
-    private void mostrarOpciones() {
-        System.out.println("1) Establecer usuario (login)");
-        System.out.println("2) Listar todos los viajes");
-        System.out.println("3) Añadir viaje");
-        System.out.println("4) Cancelar viaje");
-        System.out.println("5) Realizar reserva");
-        System.out.println("6) Modificar reserva");
-        System.out.println("7) Cancelar reserva");
-        System.out.println("8) Buscar viaje y realizar reserva");
-        System.out.println("9) Salir");
-    }
-    
-    private int solicitarOpcion() {
-        return GestorIO.getInt("Selecciona una opción [1-9]", 1, 9);
-    }
-    
-    private void ejecutarOpcion(int opcionSeleccionada) {
-
-        try {
-            switch (opcionSeleccionada) {
-                case 1 -> viajesController.setUsuario(usuariosController.login());
-                case 2 -> viajesController.listarViajes();
-                case 3 -> viajesController.anyadirViaje();
-                case 4 -> viajesController.cancelarViaje();
-                case 5 -> viajesController.realizarReserva();
-                case 6 -> viajesController.modificarReserva();
-                case 7 -> viajesController.cancelarReserva();
-                case 8 -> viajesController.buscarViaje();
-                case 9 -> GestorIO.print("¡Hasta pronto!");
-            }
-        } catch (UsuarioSinEstablecerException | FechaPasadaException | ViajeNoValidoException | ReservaNoValidaException |
-                 ReservaNoCancelableException e) {
-            System.err.println(new ExceptionView(e.getMessage()));
+    public void mostrar() {
+        System.out.print("\n" + this.titulo + "\n====================");
+        for (int i = 0; i < opciones.size(); i++) {
+            opciones.get(i).mostrar(i + 1);
         }
-        System.out.println();
+    }
+
+    public Opcion getOpcion() {
+        Scanner teclado = new Scanner(System.in);
+
+        do {
+            System.out.print("\nSeleccione una opción [1-" + opciones.size() + "]: ");
+            if (teclado.hasNextInt()) {
+                int opcion = teclado.nextInt();
+                if (opcion >= 1 && opcion <= opciones.size()) {
+                    return this.opciones.get(opcion - 1);
+                }
+            }
+            System.out.println("¡Error! La opción seleccionada no existe");
+            teclado.nextLine();
+        } while (true);
+    }
+
+    public void ejecutar() throws UsuarioSinEstablecerException, FechaPasadaException {
+        Opcion opcion = null;
+        do {
+            try {
+                mostrar();
+                opcion = getOpcion();
+                opcion.ejecutar(viajesController);
+            } catch (UsuarioSinEstablecerException | FechaPasadaException | ViajeNoValidoException | ReservaNoValidaException |
+                 ReservaNoCancelableException | CredencialesInvalidasException | MaximoIntentosAlcanzadosException e) {
+                System.err.println(new ExceptionView(e.getMessage()));
+            }
+        } while (!opcion.finalizar());
     }
 
 }

@@ -48,7 +48,7 @@ public class ListadoViajesView {
     private void generarFilasViajes (AsciiTable tabla){
         // Implementa este método usando un bucle que itere sobre la lista de viajes y mostrando uno por fila.
         for (Viaje v : viajes) {
-            tabla.addRow(v.getId(), null, v.getRuta(), v.getStringFecha(), String.format("%.2f", v.getPrecio()), v.getPropietario().getUsername(), v.getTipoViaje(), (v.getPlazasOfertadas() - v.getPlazasReservadas()), v.isCanceladoString());
+            tabla.addRow(v.getId(), null, v.getRuta(), v.getStringFecha(), String.format("%.2f", v.getPrecio()), v.getPropietario().getUsername(), "Viaje " + v.getTipoViaje(), (v.getPlazasOfertadas() - v.getPlazasReservadas()), v.isCanceladoString());
             tabla.addRule();
         }
     }

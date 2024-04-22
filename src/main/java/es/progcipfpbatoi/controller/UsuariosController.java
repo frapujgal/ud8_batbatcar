@@ -15,7 +15,7 @@ public class UsuariosController {
         this.usuariosManager = new UsuariosManager();
     }
 
-    public Usuario login() {
+    public Usuario login() throws MaximoIntentosAlcanzadosException {
         int intentos = 3;
 
         try {

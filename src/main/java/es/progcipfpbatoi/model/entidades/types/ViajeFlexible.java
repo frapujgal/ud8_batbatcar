@@ -16,6 +16,6 @@ public class ViajeFlexible extends ViajeCancelable {
 
     @Override
     public String getTipoViaje() {
-        return "Viaje Flexible";
+        return "Flexible";
     }
 }
