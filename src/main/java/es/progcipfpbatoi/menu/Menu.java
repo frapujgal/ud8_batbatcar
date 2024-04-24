@@ -4,11 +4,7 @@ import es.progcipfpbatoi.controller.UsuariosController;
 import es.progcipfpbatoi.controller.ViajesController;
 import es.progcipfpbatoi.exceptions.*;
 import es.progcipfpbatoi.model.entidades.types.Opcion;
-import es.progcipfpbatoi.model.entidades.types.OpcionListarViajes;
-import es.progcipfpbatoi.model.managers.UsuariosManager;
-import es.progcipfpbatoi.utils.GestorIO;
 import es.progcipfpbatoi.views.ExceptionView;
-import es.progcipfpbatoi.views.ListadoViajesView;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -62,7 +58,7 @@ public class Menu {
         } while (true);
     }
 
-    public void ejecutar() throws UsuarioSinEstablecerException, FechaPasadaException {
+    public void ejecutar() {
         Opcion opcion = null;
         do {
             try {

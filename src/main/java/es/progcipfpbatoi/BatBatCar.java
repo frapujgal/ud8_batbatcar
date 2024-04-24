@@ -1,13 +1,11 @@
 package es.progcipfpbatoi;
 
-import es.progcipfpbatoi.exceptions.FechaPasadaException;
-import es.progcipfpbatoi.exceptions.UsuarioSinEstablecerException;
 import es.progcipfpbatoi.menu.Menu;
 import es.progcipfpbatoi.model.entidades.types.*;
 
 public class BatBatCar {
 
-    public static void main(String[] args) throws UsuarioSinEstablecerException, FechaPasadaException {
+    public static void main(String[] args) {
         Menu menu = new Menu("BatBatCar");
         menu.anyadir(new OpcionLogin());
         menu.anyadir(new OpcionListarViajes());
