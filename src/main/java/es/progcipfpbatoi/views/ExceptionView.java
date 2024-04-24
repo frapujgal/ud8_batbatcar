@@ -6,6 +6,8 @@ import es.progcipfpbatoi.model.entidades.Reserva;
 
 public class ExceptionView {
 
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_RED = "\u001B[31m";
     private static final int ANCHO_TABLA = 60;
     private String mensaje;
 

@@ -17,8 +17,6 @@ import java.util.Scanner;
 
 public class Menu {
 
-    private static final int OPCION_SALIR = 9;
-    
     private ViajesController viajesController;
     private UsuariosController usuariosController;
     private String titulo;
@@ -67,7 +65,7 @@ public class Menu {
                 opcion.ejecutar(viajesController);
             } catch (UsuarioSinEstablecerException | FechaPasadaException | ViajeNoValidoException | ReservaNoValidaException |
                  ReservaNoCancelableException | CredencialesInvalidasException | MaximoIntentosAlcanzadosException e) {
-                System.err.println(new ExceptionView(e.getMessage()));
+                System.out.println(new ExceptionView(e.getMessage()));
             }
         } while (!opcion.finalizar());
     }
