@@ -63,10 +63,14 @@ public class Menu {
                 mostrar();
                 opcion = getOpcion();
                 opcion.ejecutar(viajesController);
+            } catch (MaximoIntentosAlcanzadosException e) {
+                System.err.println(new ExceptionView(e.getMessage()));
+                opcion.setFinalizar(true);
             } catch (UsuarioSinEstablecerException | FechaPasadaException | ViajeNoValidoException | ReservaNoValidaException |
-                 ReservaNoCancelableException | CredencialesInvalidasException | MaximoIntentosAlcanzadosException e) {
+                 ReservaNoCancelableException | CredencialesInvalidasException e) {
                 System.out.println(new ExceptionView(e.getMessage()));
             }
+
         } while (!opcion.finalizar());
     }
 

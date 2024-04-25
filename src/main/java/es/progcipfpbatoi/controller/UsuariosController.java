@@ -18,27 +18,23 @@ public class UsuariosController {
     public Usuario login() throws MaximoIntentosAlcanzadosException {
         int intentos = 3;
 
-        try {
-            do {
-                String user = GestorIO.getString("Username");
-                String password = GestorIO.getString("Password");
+        do {
+            String user = GestorIO.getString("Username");
+            String password = GestorIO.getString("Password");
 
-                try {
-                    if (usuariosManager.comprobarUsuario(user, password)) {
-                        return new Usuario(user, password);
-                    }
-                } catch (CredencialesInvalidasException e) {
-                    System.out.println(new ExceptionView(e.getMessage()));
+            try {
+                if (usuariosManager.comprobarUsuario(user, password)) {
+                    return new Usuario(user, password);
                 }
+            } catch (CredencialesInvalidasException e) {
+                System.out.println(new ExceptionView(e.getMessage()));
+            }
 
-                intentos--;
-            }  while (intentos > 0);
+            intentos--;
+        }  while (intentos > 0);
 
+        if (intentos == 0) {
             throw new MaximoIntentosAlcanzadosException("Se ha alcanzado el número máximo de intentos. Adiós");
-
-        } catch (MaximoIntentosAlcanzadosException e) {
-            System.err.println(new ExceptionView(e.getMessage()));
-            System.exit(0);
         }
 
         return null;
